@@ -37,6 +37,36 @@
         </div>
     </div>
     <script>
+    function htmlLog(s, el, bgColor) {
+        el = el || document.body;
+        bgColor = bgColor || "#3f3";
+        el.insertAdjacentHTML("beforeend", "<p style='background-color: " + bgColor + "; margin: 10px;'>" + s + "</p>");
+    }
+
+    function render(file, elId) {
+        var img = new Image();
+        img.src = window.URL.createObjectURL(file);
+        img.height = 400;
+
+        var el = document.getElementById(elId);
+        while (el.hasChildNodes()) {
+            el.removeChild(el.lastChild);
+        }
+        el.appendChild(img);
+        // Log file to compare.
+        htmlLog("File size: " + (file.size / 1024).toFixed(2) + "kb", el, "#3ff");
+
+        var keys = Object.keys(file),
+            i, len = keys.length;
+
+        keys.sort();
+
+        for (i = 0; i < len; i++) {
+            k = keys[i];
+            htmlLog(k + ": " + file[k], el);
+        }
+    }
+
     document.getElementById("uploadBtn").onchange = function() {
         var files = this.files;
 
@@ -45,36 +75,19 @@
         }
 
         var file = files[0];
-        var MAX_HEIGHT = 400;
 
-        var pinchedImage = imagePinch(file, null, MAX_HEIGHT);
+        render(file, "imgoriginal");
 
-        // Log file to compare.
-        console.log("Original file size: " + (file.size / 1024).toFixed(2) + "kb");
-        console.dir(file);
-        pinchedImage.getFile(function(file) {
-            console.log("Pinched file size: " + (file.size / 1024).toFixed(2) + "kb");
-            console.dir(file)
-        });
-
-        var imageOriginal = new Image();
-        imageOriginal.src = window.URL.createObjectURL(file);
-        imageOriginal.height = MAX_HEIGHT;
-        var elImgOriginal = document.getElementById("imgoriginal");
-        while (elImgOriginal.hasChildNodes()) {
-            elImgOriginal.removeChild(elImgOriginal.lastChild);
-        }
-        elImgOriginal.appendChild(imageOriginal);
-
-        pinchedImage.getBlob(function(blob) {
-            var imagePinched = new Image();
-            imagePinched.src = window.URL.createObjectURL(blob);;
-            var elImgPinched = document.getElementById("imgpinched");
-            while (elImgPinched.hasChildNodes()) {
-                elImgPinched.removeChild(elImgPinched.lastChild);
+        var imagePinch = new ImagePinch({
+            file: file,
+            toHeight: 400,
+            maxSize: 1024,
+            success: function(file) {
+                render(file, "imgpinched");
             }
-            elImgPinched.appendChild(imagePinched);
         });
+
+        imagePinch.pinch();
 
     };
     </script>

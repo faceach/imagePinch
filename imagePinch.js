@@ -4,7 +4,7 @@
     var CONTENT_TYPE = "image/jpeg";
 
     function blobToFile(theBlob, fileName) {
-        //A Blob() is almost a File() - it's just missing the two properties below which we will add
+        // A Blob() is almost a File()
         var d = new Date();
         theBlob.lastModified = d.getTime();
         theBlob.lastModifiedDate = d;
@@ -51,7 +51,7 @@
         // Get the data-URL formatted image
         // Firefox supports PNG and JPEG. You could check img.src to guess the
         // original format, but be aware the using "image/jpg" will re-encode the image.
-        var dataURL = canvas.toDataURL(CONTENT_TYPE);
+        var dataURL = canvas.toDataURL(img.type || "image/jpeg");
 
         return dataURL;
     }
@@ -79,34 +79,50 @@
         return getImgDataURL(img, toWidth, toHeight);
     }
 
-    WIN.imagePinch = function(file, toWidth, toHeight) {
-        if (typeof file === "undefined" || typeof FileReader === "undefined" || typeof URL === "undefined") {
+    var ImagePinch = function(opts) {
+
+        // default options
+        this.options = {
+            file: null,
+            toWidth: null,
+            toHeight: null,
+            maxSize: null,
+            success: null
+        }
+
+        // extend options
+        if (Object.prototype.toString.call(opts) === '[object Object]') {
+            for (var opt in opts) {
+                this.options[opt] = opts[opt];
+            }
+        }
+
+    };
+
+    ImagePinch.prototype.pinch = function() {
+        WIN.URL = WIN.URL || WIN.webkitURL;
+        if (typeof WIN.URL === "undefined") {
+            throw "imagePinch require Web Service \"FileReader\" and \"URL\".";
             return;
         }
 
-        var fileName = file.name;
-        CONTENT_TYPE = file.type;
-        return {
-            "getBlob": function(callback) {
-                var img = new Image();
-                img.src = WIN.URL.createObjectURL(file);
-                img.onload = function() {
-                    var imgDataURL = resizeImg(img, toWidth, toHeight);
-                    var blob = base64ToBlob(getImgDataFromDataURL(imgDataURL), CONTENT_TYPE);
-                    callback(blob);
-                };
-            },
-            "getFile": function(callback) {
-                var img = new Image();
-                img.src = WIN.URL.createObjectURL(file);
-                img.onload = function() {
-                    var imgDataURL = resizeImg(img, toWidth, toHeight);
-                    var blob = base64ToBlob(getImgDataFromDataURL(imgDataURL), CONTENT_TYPE);
-                    var file = blobToFile(blob, fileName);
-                    callback(file);
-                };
-            }
+        if (!this.options.file) {
+            throw "file is required.";
+            return;
         }
+
+        var img = new Image();
+        img.src = WIN.URL.createObjectURL(this.options.file);
+        img.onload = (function(me) {
+            return function(e) {
+                var imgDataURL = resizeImg(img, me.options.toWidth, me.options.toHeight);
+                var blob = base64ToBlob(getImgDataFromDataURL(imgDataURL), me.options.file.type);
+                var file = blobToFile(blob, me.options.file.name);
+                me.options.success.call(me, file);
+            };
+        })(this);
     };
+
+    WIN.ImagePinch = ImagePinch;
 
 })(window);
