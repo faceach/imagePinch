@@ -2,6 +2,7 @@ imagePinch
 ----------
 
 Compress image(size) by Canvas before upload, get a low quality image.
+
 Demo URL: http://faceach.github.io/imagePinch/
 
 ```
