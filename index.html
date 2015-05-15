@@ -26,6 +26,19 @@
 <body>
     <h1>Upload Image Please:</h1>
     <input id="uploadBtn" type="file" accept="image/*">
+    <pre>
+        <code>
+            var imagePinch = new ImagePinch({
+                file: file,
+                toHeight: 400,
+                maxSize: 1024,
+                success: function(file) {
+                    render(file, "imgpinched");
+                }
+            });
+            imagePinch.pinch();
+        </code>
+    </pre>
     <div class="flex-container img-container">
         <div class="flex-50">
             <h2>Original picture</h2>
