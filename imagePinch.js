@@ -1,15 +1,14 @@
 (function(WIN) {
     'use strict';
 
-    var CONTENT_TYPE = "image/jpeg";
-
-    function blobToFile(theBlob, fileName) {
+    function blobToFile(blob, fileName) {
         // A Blob() is almost a File()
+        // Add some File() required properties
         var d = new Date();
-        theBlob.lastModified = d.getTime();
-        theBlob.lastModifiedDate = d;
-        theBlob.name = fileName || "pinch";
-        return theBlob;
+        blob.lastModified = d.getTime();
+        blob.lastModifiedDate = d;
+        blob.name = fileName || "pinch";
+        return blob;
     }
 
     function base64ToBlob(b64Data, contentType, sliceSize) {
@@ -80,14 +79,17 @@
     }
 
     var ImagePinch = function(opts) {
+        /*
+        // maxSize == null && with (toWidth or toHeight) --> force to resize
+        */
 
         // default options
         this.options = {
-            file: null,
-            toWidth: null,
-            toHeight: null,
-            maxSize: null,
-            success: null
+            file: null, //File()
+            toWidth: null, // *px
+            toHeight: null, // *px
+            maxSize: null, // *kb
+            success: null // function(file){}
         }
 
         // extend options
@@ -111,6 +113,18 @@
             return;
         }
 
+        // Return while without action options
+        if (!this.options.maxSize && !this.options.toWidth && !this.options.toHeight) {
+            this.options.success.call(this, this.options.file);
+            return;
+        }
+        // Return while size is in control
+        if (this.options.maxSize && this.options.file.size <= this.options.maxSize * 1024) {
+            this.options.success.call(this, this.options.file);
+            return;
+        }
+
+        // Compress Image
         var img = new Image();
         img.src = WIN.URL.createObjectURL(this.options.file);
         img.onload = (function(me) {
