@@ -1,9 +1,13 @@
 imagePinch
 ----------
 
-Compress image(size) by Canvas before upload, get a low quality image.
+Compress image by image size.
 
 Demo URL: http://faceach.github.io/imagePinch/
+
+Scenario
+========
+Before upload an image file, compress image will bring a speed experience.
 
 ```
     var imagePinch = new ImagePinch({
