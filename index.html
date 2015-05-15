@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Compress Image Before File Upload</title>
+    <style type="text/css" media="screen">
+    .flex-container {
+        display: -webkit-flex;
+        display: flex;
+    }
+    
+    .flex-50 {
+        -webkit-flex: 1;
+        flex: 1;
+    }
+    
+    .img-container {
+        text-align: center;
+    }
+    </style>
+    <script src="./ImagePinch.js" type="text/javascript" charset="utf-8" async defer></script>
+</head>
+
+<body>
+    <h1>Upload Image Please:</h1>
+    <input id="uploadBtn" type="file" accept="image/*">
+    <div class="flex-container img-container">
+        <div class="flex-50">
+            <h2>Original picture</h2>
+            <div id="imgoriginal"></div>
+        </div>
+        <div class="flex-50">
+            <h2>Pinched picture</h2>
+            <div id="imgpinched"></div>
+        </div>
+    </div>
+    <script>
+    document.getElementById("uploadBtn").onchange = function() {
+        var files = this.files;
+
+        if (files.length === 0) {
+            return;
+        }
+
+        var file = files[0];
+        var MAX_HEIGHT = 400;
+
+        var pinchedImage = imagePinch(file, null, MAX_HEIGHT);
+
+        // Log file to compare.
+        console.log("Original file size: " + (file.size / 1024).toFixed(2) + "kb");
+        console.dir(file);
+        pinchedImage.getFile(function(file) {
+            console.log("Pinched file size: " + (file.size / 1024).toFixed(2) + "kb");
+            console.dir(file)
+        });
+
+        var imageOriginal = new Image();
+        imageOriginal.src = window.URL.createObjectURL(file);
+        imageOriginal.height = MAX_HEIGHT;
+        var elImgOriginal = document.getElementById("imgoriginal");
+        while (elImgOriginal.hasChildNodes()) {
+            elImgOriginal.removeChild(elImgOriginal.lastChild);
+        }
+        elImgOriginal.appendChild(imageOriginal);
+
+        pinchedImage.getBlob(function(blob) {
+            var imagePinched = new Image();
+            imagePinched.src = window.URL.createObjectURL(blob);;
+            var elImgPinched = document.getElementById("imgpinched");
+            while (elImgPinched.hasChildNodes()) {
+                elImgPinched.removeChild(elImgPinched.lastChild);
+            }
+            elImgPinched.appendChild(imagePinched);
+        });
+
+    };
+    </script>
+</body>
+
+</html>
