@@ -10,11 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style type="text/css" media="screen">
     .main {
-        margin: 50px auto;
+        margin: 30px auto;
     }
+    
     .main pre {
         margin-top: 15px;
     }
+    
     .flex-container {
         display: -webkit-flex;
         display: flex;
@@ -29,6 +31,21 @@
         text-align: center;
         margin-top: 30px;
     }
+
+    header > div {
+        float: left;
+    }
+    header > ul {
+        float: right;
+    }
+    @media print, screen and (max-width: 720px) {
+        .flex-container {
+            flex-direction: column;
+        }
+        header > ul {
+            float: left;
+        }
+    }
     </style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -37,9 +54,11 @@
 
 <body>
     <div class="wrapper">
-        <header>
-            <h1>Imagepinch</h1>
-            <p class="view"><a href="https://github.com/faceach/imagePinch">View the Project on GitHub <small>faceach/imagePinch</small></a></p>
+        <header class="clearfix">
+            <div>
+                <h1>Imagepinch</h1>
+                <p class="view"><a href="https://github.com/faceach/imagePinch">View the Project on GitHub <small>faceach/imagePinch</small></a></p>
+            </div>
             <ul>
                 <li><a href="https://github.com/faceach/imagePinch/zipball/master">Download <strong>ZIP File</strong></a></li>
                 <li><a href="https://github.com/faceach/imagePinch/tarball/master">Download <strong>TAR Ball</strong></a></li>
@@ -47,13 +66,16 @@
             </ul>
         </header>
         <div class="main">
-            <h2>Upload Image Please:</h2>
-            <input id="uploadBtn" type="file" accept="image/*">
+            <h2>Set maximum image size:</h2>
+            <input id="maxSizeRange" name="maxSizeRange" type="range" min="1" max="10" step="1" value="" autofocus>
+            <output id="maxSizeValue" name="maxSizeValue" value=""></output> kb
+            <h2>Upload image:</h2>
+            <input id="uploadBtn" name="uploadBtn" type="file" accept="image/*">
             <pre><code>
     var imagePinch = new ImagePinch({
         file: file,
         toHeight: 400, // *px
-        maxSize: 1024, // *kb
+        maxSize: <output id="maxSizeValueInCode"></output>, // *kb
         success: function(file) {
             render(file, "imgpinched");
         }
@@ -109,7 +131,25 @@
         }
     }
 
-    document.getElementById("uploadBtn").onchange = function() {
+    var elMaxSizeRange = document.getElementById("maxSizeRange");
+    var elMaxSizeValue = document.getElementById("maxSizeValue");
+    var elMaxSizeValueInCode = document.getElementById("maxSizeValueInCode");
+    var maxSizeValue = (localStorage && localStorage.maxSizeValue) ? localStorage.maxSizeValue : 5;
+
+    // Inital maxSize
+    elMaxSizeRange.value = maxSizeValue;
+    elMaxSizeValue.value = elMaxSizeValueInCode.value = maxSizeValue * 1024 / 10;
+
+    // Change max image size range
+    elMaxSizeRange.addEventListener("change", function(e) {
+        if (localStorage) {
+            localStorage.maxSizeValue = this.value;
+        }
+        elMaxSizeValue.value = elMaxSizeValueInCode.value = this.value * 1024 / 10;
+    }, false)
+
+    // Upload image
+    document.getElementById("uploadBtn").addEventListener("change", function() {
         var files = this.files;
 
         if (files.length === 0) {
@@ -118,20 +158,20 @@
 
         var file = files[0];
 
+        // Render original image information
         render(file, "imgoriginal");
 
         var imagePinch = new ImagePinch({
             file: file,
             toHeight: 400,
-            maxSize: 1024,
+            maxSize: elMaxSizeValue.value,
             success: function(file) {
+                // Render pinched image information
                 render(file, "imgpinched");
             }
         });
-
         imagePinch.pinch();
-
-    };
+    }, false);
     </script>
 </body>
 
