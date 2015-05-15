@@ -52,8 +52,8 @@
             <pre><code>
     var imagePinch = new ImagePinch({
         file: file,
-        toHeight: 400,
-        maxSize: 1024,
+        toHeight: 400, // *px
+        maxSize: 1024, // *kb
         success: function(file) {
             render(file, "imgpinched");
         }
