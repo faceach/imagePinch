@@ -1,14 +1,16 @@
 imagePinch
-----------
+========
 
 Compress image by image size.
 
 Demo URL: http://faceach.github.io/imagePinch/
 
 Scenario
-========
+--------
 Before upload an image file, compress image will bring a speed experience.
 
+Code example
+------------
 ```
     var imagePinch = new ImagePinch({
         file: file,
