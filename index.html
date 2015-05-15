@@ -1,11 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Compress Image Before File Upload</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Imagepinch by faceach</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style type="text/css" media="screen">
+    .main {
+        margin: 50px auto;
+    }
     .flex-container {
         display: -webkit-flex;
         display: flex;
@@ -18,24 +24,46 @@
     
     .img-container {
         text-align: center;
+        margin-top: 30px;
     }
     </style>
-    <script src="./ImagePinch.js" type="text/javascript" charset="utf-8" async defer></script>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 </head>
 
 <body>
-    <h1>Upload Image Please:</h1>
-    <input id="uploadBtn" type="file" accept="image/*">
-    <div class="flex-container img-container">
-        <div class="flex-50">
-            <h2>Original picture</h2>
-            <div id="imgoriginal"></div>
+    <div class="wrapper">
+        <header>
+            <h1>Imagepinch</h1>
+            <p class="view"><a href="https://github.com/faceach/imagePinch">View the Project on GitHub <small>faceach/imagePinch</small></a></p>
+            <ul>
+                <li><a href="https://github.com/faceach/imagePinch/zipball/master">Download <strong>ZIP File</strong></a></li>
+                <li><a href="https://github.com/faceach/imagePinch/tarball/master">Download <strong>TAR Ball</strong></a></li>
+                <li><a href="https://github.com/faceach/imagePinch">View On <strong>GitHub</strong></a></li>
+            </ul>
+        </header>
+        <div class="main">
+            <h2>Upload Image Please:</h2>
+            <input id="uploadBtn" type="file" accept="image/*">
+            <div class="flex-container img-container">
+                <div class="flex-50">
+                    <h2>Original picture</h2>
+                    <div id="imgoriginal"></div>
+                </div>
+                <div class="flex-50">
+                    <h2>Pinched picture</h2>
+                    <div id="imgpinched"></div>
+                </div>
+            </div>
         </div>
-        <div class="flex-50">
-            <h2>Pinched picture</h2>
-            <div id="imgpinched"></div>
-        </div>
+        <footer>
+            <p>This project is maintained by <a href="https://github.com/faceach">faceach</a></p>
+            <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        </footer>
     </div>
+    <script src="javascripts/scale.fix.js"></script>
+    <script src="imagePinch.js"></script>
     <script>
     function htmlLog(s, el, bgColor) {
         el = el || document.body;
@@ -46,7 +74,7 @@
     function render(file, elId) {
         var img = new Image();
         img.src = window.URL.createObjectURL(file);
-        img.height = 400;
+        img.width = 400;
 
         var el = document.getElementById(elId);
         while (el.hasChildNodes()) {
