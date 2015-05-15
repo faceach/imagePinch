@@ -1,13 +1,15 @@
 imagePinch
 ========
 
-Compress image by image size.
+Compress image by image dimension(use canvas).
+
+image -> canvas -> data-URL -> Blob -> File -> image
 
 Demo URL: http://faceach.github.io/imagePinch/
 
 Scenario
 --------
-Before upload an image file, compress image will bring a speed experience.
+Before upload an image file, compress image will bring a good speed experience.
 
 Code example
 ------------
@@ -17,7 +19,11 @@ Code example
         toHeight: 400, // *px
         maxSize: 1024, // *kb
         success: function(file) {
-            render(file, "imgpinched");
+            // Post in "Content-Type:application/octet-stream"
+            // Or
+            // Append to document as an Image
+            var img = new Image();
+            img.src = window.URL.createObjectURL(file);
         }
     });
     imagePinch.pinch();
