@@ -6,19 +6,13 @@ Compress image(size) by Canvas before upload, get a low quality image.
 Demo URL: http://faceach.github.io/imagePinch/
 
 ```
-    // file, toWidth, toHeight
-    var pinchedImage = imagePinch(file, null, 400);
-    pinchedImage.getFile(function(file) {
-        console.log("Pinched file size: " + (file.size / 1024).toFixed(2) + "kb");
-        console.dir(file)
-    });
-    pinchedImage.getBlob(function(blob) {
-        var imagePinched = new Image();
-        imagePinched.src = window.URL.createObjectURL(blob);;
-        var elImgPinched = document.getElementById("imgpinched");
-        while (elImgPinched.hasChildNodes()) {
-            elImgPinched.removeChild(elImgPinched.lastChild);
+    var imagePinch = new ImagePinch({
+        file: file,
+        toHeight: 400, // *px
+        maxSize: 1024, // *kb
+        success: function(file) {
+            render(file, "imgpinched");
         }
-        elImgPinched.appendChild(imagePinched);
     });
+    imagePinch.pinch();
 ```
