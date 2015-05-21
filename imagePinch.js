@@ -1,4 +1,10 @@
-(function(WIN) {
+/*!
+ *
+ * https://github.com/faceach/imagePinch
+ *
+ */
+
+ (function(WIN) {
     'use strict';
 
     function blobToFile(blob, fileName) {
