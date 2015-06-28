@@ -31,14 +31,17 @@
         text-align: center;
         margin-top: 30px;
     }
-
+    
     header > div {
         float: left;
     }
+    
     header > ul {
         float: right;
     }
-    @media print, screen and (max-width: 720px) {
+    
+    @media print,
+    screen and (max-width: 720px) {
         .flex-container {
             flex-direction: column;
         }
@@ -74,7 +77,6 @@
             <pre><code>
     var imagePinch = new ImagePinch({
         file: file,
-        toHeight: 400, // *px
         maxSize: <output id="maxSizeValueInCode"></output>, // *kb
         success: function(file) {
             render(file, "imgpinched");
@@ -120,10 +122,19 @@
         // Log file to compare.
         htmlLog("File size: " + (file.size / 1024).toFixed(2) + "kb", el, "#3ff");
 
-        var keys = Object.keys(file),
-            i, len = keys.length;
+        console.log(elId + ":");
+        console.dir(file);
+        /*var keys = Object.keys(file),
+            i, len = keys.length, k;
 
         keys.sort();
+
+        for (i = 0; i < len; i++) {
+            k = keys[i];
+            htmlLog(k + ": " + file[k], el);
+        }*/
+        var keys = ["name", "size", "type", "lastModified", "lastModifiedDate"],
+            i, len = keys.length, k;
 
         for (i = 0; i < len; i++) {
             k = keys[i];
@@ -163,7 +174,7 @@
 
         var imagePinch = new ImagePinch({
             file: file,
-            toHeight: 400,
+            //toHeight: 400,
             maxSize: elMaxSizeValue.value,
             success: function(file) {
                 // Render pinched image information
