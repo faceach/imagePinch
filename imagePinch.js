@@ -63,8 +63,8 @@
 
     function resizeImg(img, toWidth, toHeight) {
 
-        var width = img.width;
-        var height = img.height;
+        var width = img.naturalWidth || img.width;
+        var height = img.naturalHeight || img.height;
 
         if (toWidth && !toHeight && width > toWidth) {
             toHeight = height * (toWidth / width);
